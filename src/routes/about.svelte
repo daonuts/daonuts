@@ -2,6 +2,13 @@
 	<title>About</title>
 </svelte:head>
 
-<h1>About this site</h1>
-
-<p>This is the 'about' page. There's not much here.</p>
+<section class="section">
+	<div class="container">
+		<div class="columns">
+			<div class="content column is-8 is-offset-2">
+				<!-- <h2>The Problem</h2> -->
+				<!-- <p>Online communities lack agency. Members are beholden to decisions made by host platforms and administrators.</p> -->
+			</div>
+		</div>
+	</div>
+</section>

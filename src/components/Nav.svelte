@@ -57,8 +57,8 @@
 			<div class="navbar-end">
 				<a class='navbar-item {segment === undefined ? "selected" : ""}' href='.'>home</a>
 				<!-- <a class='navbar-item {segment === "about" ? "selected" : ""}' href='about'>about</a> -->
-				<a class='navbar-item' target="_blank" href='https://github.com/daonuts'><span class="icon"><img src="/github-brands.svg" /></span></a>
-				<a class='navbar-item' target="_blank" href='https://www.reddit.com/r/daonuts'><span class="icon"><img src="/reddit-brands.svg" /></span></a>
+				<a class='navbar-item' target="_blank" href='https://github.com/daonuts'><span class="icon"><img alt="github" src="/github-brands.svg" /></span></a>
+				<a class='navbar-item' target="_blank" href='https://www.reddit.com/r/daonuts'><span class="icon"><img alt="reddit" src="/reddit-brands.svg" /></span></a>
 				<span class='navbar-item account'>{$account && `${$account.slice(0,8)}...`}</span>
 			</div>
 		</div>

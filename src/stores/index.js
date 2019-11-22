@@ -14,12 +14,16 @@ export const contracts = derived([dao, provider], async ([$dao, $provider]) => {
 })
 export const contribBalance = derived([account, contracts], async ([$account, $contracts]) => {
   if(!$account || !$contracts) return null
-  const { contrib } = await $contracts
+  const contracts = await $contracts
+  if(!contracts) return null
+  const { contrib } = contracts
   return await contrib.balanceOf($account)
 })
 export const currencyBalance = derived([account, contracts], async ([$account, $contracts]) => {
   if(!$account || !$contracts) return null
-  const { currency } = await $contracts
+  const contracts = await $contracts
+  if(!contracts) return null
+  const { currency } = contracts
   return await currency.balanceOf($account)
 })
 export const currencySymbol = derived(contracts, async ($contracts) => {

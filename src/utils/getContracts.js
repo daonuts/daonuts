@@ -1,12 +1,17 @@
 import ethers from 'ethers'
+import { abi as AirdropDuoABI } from '../abi/AirdropDuo.json'
+import { abi as CappedVotingABI } from '../abi/CappedVoting.json'
+import { abi as HarbergerABI } from '../abi/Harberger.json'
 import { abi as KernelABI } from '../abi/Kernel.json'
 import { abi as SubscribeABI } from '../abi/Subscribe.json'
 import { abi as TippingABI } from '../abi/Tipping.json'
-import { abi as TokenManagerABI } from '../abi/TokenManager.json'
 import { abi as TokenABI } from '../abi/Token.json'
+import { abi as TokenManagerABI } from '../abi/TokenManager.json'
 const { utils, Contract } = ethers
 const tokenManagerNamehash = utils.namehash('token-manager.aragonpm.eth')
 const apps = {}
+apps[utils.namehash('capped-voting-app.open.aragonpm.eth')] = {name: 'voting', abi: CappedVotingABI}
+apps[utils.namehash('harberger-app.open.aragonpm.eth')] = {name: 'harberger', abi: HarbergerABI}
 apps[utils.namehash('subscribe-app.open.aragonpm.eth')] = {name: 'subscribe', abi: SubscribeABI}
 apps[utils.namehash('tipping-app.open.aragonpm.eth')] = {name: 'tipping', abi: TippingABI}
 
