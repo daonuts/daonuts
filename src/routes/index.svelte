@@ -25,6 +25,15 @@
 		margin: 2rem 0;
 		font-size: 2.25em;
 	}
+	.text-contrib {
+		color: darkorange;
+	}
+	.text-gov {
+		color: darkorange;
+	}
+	.text-econ {
+		color: darkorange;
+	}
 </style>
 
 <section class="section hero is-fullheight-with-navbar">
@@ -37,7 +46,8 @@
 					</h1>
 					<h2 class="subtitle">
 						<p>
-							leverage community contributions to establish governance and local economy.
+							<span>leverage</span> <span class="text-contrib">community contributions</span> to <br/>
+							<span>establish</span> <span class="text-gov">governance</span> and <span class="text-econ">local economy</span>.
 						</p>
 					</h2>
 					<h3>
