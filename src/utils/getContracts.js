@@ -50,10 +50,10 @@ async function getContracts(daoAddress, provider){
 // export default getContracts
 module.exports.default = getContracts
 
-if(typeof window === "undefined"){
+if(typeof window === "undefined" && process.argv.length){
   (async ()=>{
-    const SOME_DAO_ADDRESS = "0xa23434b973dA1Af103Da4037F04C5b44ba7BDFcF"
-    const contracts = await getContracts(SOME_DAO_ADDRESS, ethers.getDefaultProvider('rinkeby'))
+    // const SOME_DAO_ADDRESS = "0xa23434b973dA1Af103Da4037F04C5b44ba7BDFcF"
+    const contracts = await getContracts(process.argv[2], ethers.getDefaultProvider(process.argv[3] || 'rinkeby'))
     for (const c in contracts) console.log(`${c}: ${contracts[c].address}`)
   })()
 }
