@@ -1,11 +1,20 @@
 <script>
+  import { createEventDispatcher, onDestroy } from 'svelte';
   import ethers from 'ethers'
-  const { BigNumber, utils } = ethers
+  const { BigNumber, constants, utils } = ethers
   const { formatBytes32String, parseBytes32String, toUtf8Bytes, hexlify, hexZeroPad, bigNumberify } = utils
 
-  const decimals = "1000000000000000000"
+  const dispatch = createEventDispatcher();
+  const close = () => dispatch('close');
+  const handleKeydown = e => {
+		if (e.key === 'Escape') {
+			close();
+			return;
+		}
+	};
 
   let value = 1000
+  let symbol
 
 	export let token
 	export let tipping
@@ -13,8 +22,13 @@
   export let address
   export let contentId
 
-  async function submit(){
-    let val = BigNumber.from(value).mul(decimals);
+  (async ()=>{
+    symbol = await token.symbol()
+  })()
+
+  async function submit(e){
+    e.preventDefault()
+    let val = BigNumber.from(value).mul(constants.WeiPerEther)
     let id = formatBytes32String(contentId)
     const data = "0x" + [hexlify(1) /*1 = tip*/, address, id].map(a=>a.substr(2)).join("")
     console.log(data)
@@ -25,8 +39,32 @@
 
 </script>
 
-<p>{recipient}</p>
-<p>{address}</p>
-<p>{contentId}</p>
-<input type="number" bind:value>
-<button on:click={submit}>Tip</button>
+<style>
+	.modal-content {
+    background: rgba(255,255,255);
+    padding: 2rem;
+	}
+  [contenteditable].input {
+    width: auto;
+    vertical-align: middle;
+    margin-top: -3px;
+    font-size: 1.25rem;
+  }
+  form .button {
+    float: right;
+  }
+</style>
+
+<svelte:window on:keydown={handleKeydown}/>
+
+<div class="modal is-active">
+  <div class="modal-background"></div>
+  <div class="modal-content">
+    <form on:submit={submit}>
+      <h2 class="subtitle">Tip <span class="input" contenteditable="true" bind:innerHTML={value}>{value}</span> {symbol} to <a href={`https://rinkeby.etherscan.io/address/${address}`}>{recipient}</a> for {contentId}</h2>
+
+      <button class="button is-primary">Tip</button>
+    </form>
+  </div>
+  <button class="modal-close is-large" on:click={close} aria-label="close"></button>
+</div>
