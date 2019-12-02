@@ -1,0 +1,3 @@
+INSERT INTO users (username, address) VALUES
+    ('carlslarson', '0x95D9bED31423eb7d5B68511E0352Eae39a3CDD20')
+ON CONFLICT DO NOTHING;

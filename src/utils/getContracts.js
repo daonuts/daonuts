@@ -32,17 +32,17 @@ async function getContracts(daoAddress, provider){
   const logs = await kernel.queryFilter(NewAppProxyEvent, fromBlock, toBlock)
   const contracts = {}
   for (const log of logs) {
-      const [address,,appId] = kernel.interface.parseLog(log).values
-      if(appId == tokenManagerNamehash){
-        if(!contracts['contribManager']) {
-          contracts['contribManager'] = new Contract(address, TokenManagerABI, provider)
-          contracts['contrib'] = new Contract(await contracts['contribManager'].token(), TokenABI, provider)
-        } else {
-          contracts['currencyManager'] = new Contract(address, TokenManagerABI, provider)
-          contracts['currency'] = new Contract(await contracts['currencyManager'].token(), TokenABI, provider)
-        }
-      } else if(apps[appId])
-        contracts[apps[appId].name] = new Contract(address, apps[appId].abi, provider)
+    const [address,,appId] = kernel.interface.parseLog(log).values
+    if(appId == tokenManagerNamehash){
+      if(!contracts['contribManager']) {
+        contracts['contribManager'] = new Contract(address, TokenManagerABI, provider)
+        contracts['contrib'] = new Contract(await contracts['contribManager'].token(), TokenABI, provider)
+      } else {
+        contracts['currencyManager'] = new Contract(address, TokenManagerABI, provider)
+        contracts['currency'] = new Contract(await contracts['currencyManager'].token(), TokenABI, provider)
+      }
+    } else if(apps[appId])
+      contracts[apps[appId].name] = new Contract(address, apps[appId].abi, provider)
   }
   return contracts
 }

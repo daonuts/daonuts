@@ -30,7 +30,7 @@
     e.preventDefault()
     let val = BigNumber.from(value).mul(constants.WeiPerEther)
     let id = formatBytes32String(contentId)
-    const data = "0x" + [hexlify(1) /*1 = tip*/, address, id].map(a=>a.substr(2)).join("")
+    const data = "0x" + [hexlify(1) /*1 = tip*/, hexZeroPad(hexlify(address),32), id].map(a=>a.substr(2)).join("")
     console.log(data)
     await ethereum.enable()
     token = token.connect(token.provider.getSigner())

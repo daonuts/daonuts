@@ -7,3 +7,4 @@ yarn-error.log
 .env*
 up.json
 yarn.lock
+/scripts/

@@ -20,7 +20,7 @@
   export let sub
 </script>
 
-<img src={`logos/${sub.display_name}.png`} />
+<img alt={`${sub.display_name} logo`} src={`logos/${sub.display_name}.png`} />
 {#await Promise.all([$balance, $currencySymbol]) then value}
 	<p>{value[0].currency} {value[1]}</p>
   <progress class="progress {value[0].ratioClass}" value={value[0].currency} max={value[0].contrib}>{value[0].currency}</progress>

@@ -4,6 +4,7 @@
   "version": "0.0.1",
   "scripts": {
     "dev": ". ./.env-local && sapper dev",
+    "psql": ". ./.env-local && psql $DB_URL",
     "build": "sapper build --legacy",
     "export": "sapper export --legacy",
     "start": "node __sapper__/build",
@@ -12,6 +13,7 @@
     "test": "run-p --race dev cy:run"
   },
   "dependencies": {
+    "aws-sdk": "^2.580.0",
     "bulma": "^0.8.0",
     "compression": "^1.7.1",
     "ethers": "^5.0.0-beta.159",
@@ -19,7 +21,8 @@
     "rollup-plugin-postcss": "^2.0.3",
     "sirv": "^0.4.0",
     "snoowrap": "^1.20.0",
-    "svelma": "^0.3.0"
+    "svelma": "^0.3.0",
+    "uuid": "^3.3.3"
   },
   "devDependencies": {
     "@babel/core": "^7.0.0",
