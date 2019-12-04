@@ -4,8 +4,8 @@ import getContracts from '../utils/getContracts'
 
 export const account = writable()
 export const provider = derived(account, $account => {
-  if($account) return new ethers.providers.Web3Provider(web3.currentProvider, 'rinkeby')
-  else return ethers.getDefaultProvider('rinkeby')
+  if($account) return new ethers.providers.Web3Provider(web3.currentProvider, 'mainnet')
+  else return ethers.getDefaultProvider('mainnet')
 })
 export const user = derived(account, async $account => {
   if(!$account) return null

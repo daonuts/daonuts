@@ -10,7 +10,7 @@
 const subs = [
 	{
 		slug: 'ethtrader',
-		dao: '0xa23434b973dA1Af103Da4037F04C5b44ba7BDFcF'
+		dao: '0x57EBE61f5f8303AD944136b293C1836B3803b4c0'
 	}
 ];
 

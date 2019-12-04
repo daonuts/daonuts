@@ -63,7 +63,7 @@
   <div class="modal-background"></div>
   <div class="modal-content">
     <form on:submit={submit}>
-      <h2 class="subtitle">Tip <span class="input" contenteditable="true" bind:innerHTML={value}>{value}</span> {symbol} to <a href={`https://rinkeby.etherscan.io/address/${address}`}>{recipient}</a> for {contentId}</h2>
+      <h2 class="subtitle">Tip <span class="input" contenteditable="true" bind:innerHTML={value}>{value}</span> {symbol} to <a href={`https://etherscan.io/address/${address}`}>{recipient}</a> for {contentId}</h2>
 
       <button class="button is-primary">Tip</button>
     </form>
