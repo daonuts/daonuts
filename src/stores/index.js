@@ -7,6 +7,12 @@ export const provider = derived(account, $account => {
   if($account) return new ethers.providers.Web3Provider(web3.currentProvider, 'rinkeby')
   else return ethers.getDefaultProvider('rinkeby')
 })
+export const user = derived(account, async $account => {
+  if(!$account) return null
+  let res = await fetch(`/users.json?address=${await $account}`)
+  res = await res.json()
+  return res
+})
 export const dao = writable()
 export const contracts = derived([dao, provider], async ([$dao, $provider]) => {
   if(!$dao || !$provider) return null

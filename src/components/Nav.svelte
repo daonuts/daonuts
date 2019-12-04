@@ -1,5 +1,5 @@
 <script>
-	import { account, dao, contribBalance, currencyBalance, currencySymbol } from '../stores'
+	import { account, dao, contribBalance, currencyBalance, currencySymbol, user } from '../stores'
 	export let segment;
 </script>
 
@@ -60,9 +60,17 @@
 				<a class='navbar-item' target="_blank" href='https://github.com/daonuts'><span class="icon"><img alt="github" src="/github-brands.svg" /></span></a>
 				<a class='navbar-item' target="_blank" href='https://www.reddit.com/r/daonuts'><span class="icon"><img alt="reddit" src="/reddit-brands.svg" /></span></a>
 				{#if $account}
-				<span class='navbar-item account'>{`${$account.slice(0,8)}...`}</span>
+					{#await $user then user}
+						{#if user && user.username}
+						<span class='navbar-item' title={$account}>{user.username}</span>
+						{:else}
+						<span class='navbar-item account'>{`${$account.slice(0,8)}...`}</span>
+						{/if}
+					{/await}
 				{:else}
-				<button class="button is-primary">Connect</button>
+				<div class='navbar-item'>
+					<button class="button is-primary">Connect</button>
+				</div>
 		  	{/if}
 			</div>
 		</div>

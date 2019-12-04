@@ -34,7 +34,9 @@
     console.log(data)
     await ethereum.enable()
     token = token.connect(token.provider.getSigner())
-    await token.send(tipping.address, val, data)
+    let tipTx = await token.send(tipping.address, val, data)
+    await tipTx.wait()
+    close()
   }
 
 </script>
