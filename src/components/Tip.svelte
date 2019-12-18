@@ -2,7 +2,19 @@
   import { createEventDispatcher, onDestroy } from 'svelte';
   import ethers from 'ethers'
   const { BigNumber, constants, utils } = ethers
-  const { formatBytes32String, parseBytes32String, toUtf8Bytes, hexlify, hexZeroPad, bigNumberify } = utils
+  const { Fragment, Interface, formatBytes32String, parseBytes32String, toUtf8Bytes, hexlify, hexZeroPad, bigNumberify } = utils
+
+  let frag = Fragment.from({
+      "inputs": [
+        {
+          "name": "contentId",
+          "type": "bytes12"
+        }
+      ],
+      "name": "redditTipV1",
+      "type": "function"
+  })
+  let iface = new Interface([frag])
 
   const dispatch = createEventDispatcher();
   const close = () => dispatch('close');
@@ -30,8 +42,8 @@
     e.preventDefault()
     let val = BigNumber.from(value).mul(constants.WeiPerEther)
     let id = formatBytes32String(contentId)
-    const data = "0x" + [hexlify(1) /*1 = tip*/, hexZeroPad(hexlify(address),32), id].map(a=>a.substr(2)).join("")
-    console.log(data)
+    // const data = "0x" + [hexlify(1) /*1 = tip*/, hexZeroPad(hexlify(address),32), id].map(a=>a.substr(2)).join("")
+    const data = iface.encodeFunctionData(frag, [hexZeroPad(hexlify(toUtf8Bytes(contentId)),12)])
     await ethereum.enable()
     token = token.connect(token.provider.getSigner())
     let tipTx = await token.send(tipping.address, val, data)

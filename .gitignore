@@ -8,3 +8,4 @@ yarn-error.log
 up.json
 yarn.lock
 /scripts/
+/scratch/
