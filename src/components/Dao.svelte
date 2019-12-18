@@ -10,6 +10,6 @@
 
 {#await $contracts then contracts}
   {#if action == "tip"}
-  	<Tip token={contracts.currency} tipping={contracts.tipping} {...actionParams} on:close="{() => action = null}" />
+  	<Tip token={contracts.currency} {...actionParams} on:close="{() => action = null}" />
   {/if}
 {/await}

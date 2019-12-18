@@ -29,7 +29,6 @@
   let symbol
 
 	export let token
-	export let tipping
   export let recipient
   export let address
   export let contentId
@@ -44,9 +43,10 @@
     let id = formatBytes32String(contentId)
     // const data = "0x" + [hexlify(1) /*1 = tip*/, hexZeroPad(hexlify(address),32), id].map(a=>a.substr(2)).join("")
     const data = iface.encodeFunctionData(frag, [hexZeroPad(hexlify(toUtf8Bytes(contentId)),12)])
+    console.log(address)
     await ethereum.enable()
     token = token.connect(token.provider.getSigner())
-    let tipTx = await token.send(tipping.address, val, data)
+    let tipTx = await token.send(address, val, data)
     await tipTx.wait()
     close()
   }
