@@ -2,6 +2,7 @@
 	import { onMount } from 'svelte'
 	import Dao from '../../../components/Dao.svelte'
 	import DaoMenu from '../../../components/DaoMenu.svelte'
+	import Feed from '../../../components/Feed.svelte'
   import { dao } from '../../../stores'
 
 	export async function preload({ params, query }) {
@@ -56,16 +57,16 @@
 		<aside class="menu section column is-one-fifth">
 			<DaoMenu sub={sub} />
 		</aside>
-		<section class="section column is-four-fifth">
-			<h1 class="title">{sub.title}</h1>
-			{sub.public_description}
+		<section class="section column is-four-fifths">
+			<h1 class="title has-text-weight-medium">{sub.title}</h1>
 
 			{#if dao}
-				<p>has integration ({sub.dao})</p>
 				<Dao action={action} actionParams={actionParams} />
 			{:else}
 				<strong><a target='_blank' href='https://www.reddit.com/message/compose/?to=carlslarson&subject={sub.display_name}&message=The {sub.display_name_prefixed} subreddit is interested in a daonuts integration.'}>request integration</a></strong>
 			{/if}
+
+			<Feed sub={sub} />
 		</section>
 	</div>
 </div>
