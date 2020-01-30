@@ -3,9 +3,11 @@
 	import Dao from '../../../components/Dao.svelte'
 	import DaoMenu from '../../../components/DaoMenu.svelte'
 	import Feed from '../../../components/Feed.svelte'
-  import { dao } from '../../../stores'
+  import { dao, user } from '../../../stores'
 
-	export async function preload({ params, query }) {
+	export async function preload({ params, query }, session) {
+
+		console.log("SESSION", session)
 
 		console.log(params, query)
 		// the `slug` parameter is available because

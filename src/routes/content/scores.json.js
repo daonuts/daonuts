@@ -3,23 +3,23 @@ export async function get(req, res, next) {
 
   const query = {
     // give the query a unique name
-    name: 'fetch-user-by-address',
-    text: 'SELECT id, username, address FROM users WHERE address ILIKE $1 LIMIT 1',
-    values: [req.query.address],
+    name: 'fetch-content-scores',
+    text: 'SELECT content_id, sum(votes) FROM content_votes WHERE content_id IN $1 GROUP_BY content_id',
+    values: [req.query.contentId.split(",")],
   }
 
-	let user
+	let scores
 	try {
     const client = await req.db.connect()
     let dbRes = await client.query(query)
     if(dbRes.rows.length)
-      user = dbRes.rows[0]
+      scores = dbRes.rows
     client.release()
 	} catch(e){
     console.log(e)
   }
 
-	if(!user){
+	if(!scores){
 		res.writeHead(404, {
 			'Content-Type': 'application/json'
 		});
@@ -33,5 +33,5 @@ export async function get(req, res, next) {
 		'Content-Type': 'application/json'
 	});
 
-  res.end(JSON.stringify(user))
+  res.end(JSON.stringify(scores))
 }

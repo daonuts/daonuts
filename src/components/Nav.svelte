@@ -1,15 +1,28 @@
 <script>
-	import { account, dao, contribBalance, currencyBalance, currencySymbol, user } from '../stores'
+	import { stores } from '@sapper/app'
+	import { account, dao, contribBalance, currencyBalance, currencySymbol } from '../stores'
+
+	const { session } = stores()
+
 	export let segment;
+
+	async function login(){
+    const res = await fetch(`/login.json?address=${$account}`)
+		const _user = await res.json()
+		user.set(_user)
+		console.log(_user)
+	}
+
+	async function logout(){
+    const res = await fetch(`/logout`)
+		user.set(_user)
+		console.log(_user)
+	}
 </script>
 
 <style>
 	nav {
 		border-bottom: 1px solid rgba(255,62,0,0.1);
-		/* font-weight: 300;
-		padding: 0 1em;
-		display: flex;
-    justify-content: space-between; */
 	}
 
 	.navbar-brand {
@@ -60,13 +73,11 @@
 				<a class='navbar-item' target="_blank" href='https://github.com/daonuts'><span class="icon"><img alt="github" src="/github-brands.svg" /></span></a>
 				<a class='navbar-item' target="_blank" href='https://www.reddit.com/r/daonuts'><span class="icon"><img alt="reddit" src="/reddit-brands.svg" /></span></a>
 				{#if $account}
-					{#await $user then user}
-						{#if user && user.username}
-						<span class='navbar-item' title={$account}>{user.username}</span>
-						{:else}
-						<span class='navbar-item account'>{`${$account.slice(0,8)}...`}</span>
-						{/if}
-					{/await}
+					{#if $session && $session.user.username}
+					<span on:click={logout} class='navbar-item' title={$session.user.username}>{$session.user.username}</span>
+					{:else}
+					<span on:click={login} class='navbar-item account'>{`${$account.slice(0,8)}...`}</span>
+					{/if}
 				{:else}
 				<div class='navbar-item'>
 					<button class="button is-primary">Connect</button>

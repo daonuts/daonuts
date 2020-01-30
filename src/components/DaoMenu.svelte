@@ -50,4 +50,4 @@
 	<p>{value[0].currency} {value[1]}</p>
   <progress class="progress {value[0].ratioClass}" title={`${value[0].currency} of ${value[0].contrib} earned`} value={value[0].currency} max={value[0].contrib}>{value[0].currency}</progress>
 {/await}
-<a target="_blank" href={`https://mainnet.aragon.org/#/${sub.dao}/`}>DAO Admin</a>
+<a target="_blank" href={`https://mainnet.aragon.org/#/${sub.ens || sub.dao}/`}>DAO Admin</a>
