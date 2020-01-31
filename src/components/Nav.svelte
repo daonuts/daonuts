@@ -8,15 +8,13 @@
 
 	async function login(){
     const res = await fetch(`/login.json?address=${$account}`)
-		const _user = await res.json()
-		user.set(_user)
-		console.log(_user)
+		const user = await res.json()
+		session.set({user})
 	}
 
 	async function logout(){
     const res = await fetch(`/logout`)
-		user.set(_user)
-		console.log(_user)
+		session.set({})
 	}
 </script>
 
@@ -73,7 +71,7 @@
 				<a class='navbar-item' target="_blank" href='https://github.com/daonuts'><span class="icon"><img alt="github" src="/github-brands.svg" /></span></a>
 				<a class='navbar-item' target="_blank" href='https://www.reddit.com/r/daonuts'><span class="icon"><img alt="reddit" src="/reddit-brands.svg" /></span></a>
 				{#if $account}
-					{#if $session && $session.user.username}
+					{#if $session.user}
 					<span on:click={logout} class='navbar-item' title={$session.user.username}>{$session.user.username}</span>
 					{:else}
 					<span on:click={login} class='navbar-item account'>{`${$account.slice(0,8)}...`}</span>

@@ -1,7 +1,15 @@
 export async function post(req, res, next) {
-  console.log("body", req.body)
 
-  console.log(req.session)
+  if(!req.session.user){
+    res.writeHead(401, {
+      'Content-Type': 'application/json'
+    });
+
+    return res.end(JSON.stringify({
+      message: `Please login`
+    }));
+  }
+
   //validate req.body.vote
 
   const query = {

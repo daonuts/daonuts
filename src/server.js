@@ -18,8 +18,10 @@ async function main(){
 			compression({ threshold: 0 }),
 			(req,res,n)=>{req.db=pool;n()},
 			cookieSession({name: 'session', secret: 'keyboard kittens'}),
+			authRoutes,
+			// leave sapper middleware to last
 			sapper.middleware({
-				session: (req, res) => ({
+				session: (req, res) => (req.session && {
 					user: req.session.user
 				})
 			})
@@ -29,3 +31,17 @@ async function main(){
 		});
 }
 main()
+
+function authRoutes(req, res, next){
+	if(["/vote.json"].includes(req.path) && !req.session.user){
+    res.writeHead(401, {
+      'Content-Type': 'application/json'
+    });
+
+    return res.end(JSON.stringify({
+      message: `Please login`
+    }));
+	}
+	
+	next()
+}

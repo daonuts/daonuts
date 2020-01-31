@@ -3,15 +3,9 @@
 	import Dao from '../../../components/Dao.svelte'
 	import DaoMenu from '../../../components/DaoMenu.svelte'
 	import Feed from '../../../components/Feed.svelte'
-  import { dao, user } from '../../../stores'
+  import { dao } from '../../../stores'
 
 	export async function preload({ params, query }, session) {
-
-		console.log("SESSION", session)
-
-		console.log(params, query)
-		// the `slug` parameter is available because
-		// this file is called [slug].svelte
 		const res = await this.fetch(`r/${params.slug}.json`);
 		const sub = await res.json();
 		const { action, ...actionParams } = query;
