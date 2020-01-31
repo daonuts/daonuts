@@ -22,6 +22,7 @@
     "cookie-session": "^1.4.0",
     "easy-session": "^2.0.3",
     "ethers": "^5.0.0-beta.162",
+    "node-fetch": "^2.6.0",
     "pg": "^7.14.0",
     "polka": "next",
     "rollup-plugin-postcss": "^2.0.3",

@@ -33,7 +33,7 @@ async function main(){
 main()
 
 function authRoutes(req, res, next){
-	if(["/vote.json"].includes(req.path) && !req.session.user){
+	if(["/votes.json"].includes(req.path) && !req.session.user){
     res.writeHead(401, {
       'Content-Type': 'application/json'
     });
@@ -42,6 +42,6 @@ function authRoutes(req, res, next){
       message: `Please login`
     }));
 	}
-	
+
 	next()
 }

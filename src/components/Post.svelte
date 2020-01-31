@@ -3,12 +3,14 @@
   import { faComments } from '@fortawesome/free-solid-svg-icons/faComments'
   import timeSince from '../utils/timeSince'
 
-  let score = {}
-  export let post
   export let sub
+  export let post
+  export let vote
+  export let score
 
-  async function vote(dir){
-    let res = await fetch("/content/vote.json", {
+  async function doVote(dir){
+    console.log(dir)
+    const res = await fetch("/content/votes.json", {
       method: 'POST',
       body: JSON.stringify({contentId: post.name, vote: dir}),
       headers: {
@@ -16,7 +18,9 @@
       }
     })
 
-    score = await res.json()
+    const s = await res.json()
+    vote = s.vote
+    score = s.score
   }
 </script>
 
@@ -28,7 +32,18 @@
   }
   .score {
     width: 50px;
-    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .score > .value {
+    position: relative;
+    flex-grow: 1;
+  }
+  .score > .value > .diminish {
+    position: absolute;
+    top: 0.25rem;
+    margin-left: 0.25rem;
   }
   .thumb {
     width: 70px;
@@ -43,22 +58,23 @@
   }
   .subtitle {
     margin-top: 0.5rem;
+  }
+  .diminish {
     color: rgba(0,0,0,0.25);
   }
-  .vote > .active {
+  .vote.active {
     color: blue;
   }
 </style>
 
 <article class="media">
   <div class="media-left score">
-    <div class="vote">
-      <div class:active={score.userVote === 1} on:click={()=>vote(score.userVote === 1 ? 0 : 1)}>up</div>
-      <div class:active={score.userVote === -1} on:click={()=>vote(score.userVote === -1 ? 0 : -1)}>down</div>
+    <div class="vote up" class:active={vote === 1} on:click={()=>doVote(vote === 1 ? 0 : 1)}>up</div>
+    <div class="value">
+      <span class="">{score || 0}</span>
+      <span class="diminish is-size-7">{post.score}</span>
     </div>
-    <div>
-      {post.score}
-    </div>
+    <div class="vote down" class:active={vote === -1} on:click={()=>doVote(vote === -1 ? 0 : -1)}>down</div>
   </div>
   <a target="_blank" href={`${post.url}`} class="media-left thumb">
     <img src={['self', 'default'].includes(post.thumbnail) ? `logos/${sub.slug}.png` : post.thumbnail} alt={post.title} />
@@ -68,7 +84,7 @@
       <h2 class="title is-6 has-text-weight-normal">
         <a target="_blank" href={`${post.url}`}>{post.title}</a>
       </h2>
-      <span class="subtitle is-size-7">{post.domain}</span>
+      <span class="diminish is-size-7">{post.domain}</span>
       <p class="subtitle is-size-7">
         submitted {timeSince(new Date(post.created_utc*1000))} by
         <a target="_blank" href={`https://www.reddit.com/u/${post.author}`}>{`u/${post.author}`}</a>

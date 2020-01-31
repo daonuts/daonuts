@@ -1,11 +1,13 @@
 export async function get(req, res, next) {
-  console.log("query", req.query)
+
+  const ids = req.query.contentId.split(",")
+  const params = ids.map((i,idx)=>`$${idx+1}`)
 
   const query = {
     // give the query a unique name
     name: 'fetch-content-scores',
-    text: 'SELECT content_id, sum(votes) FROM content_votes WHERE content_id IN $1 GROUP_BY content_id',
-    values: [req.query.contentId.split(",")],
+    text: `SELECT content_id, sum(vote) as score FROM content_votes WHERE content_id IN (${params.join(',')}) GROUP BY content_id`,
+    values: ids,
   }
 
 	let scores
