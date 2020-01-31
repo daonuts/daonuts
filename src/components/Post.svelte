@@ -1,6 +1,8 @@
 <script>
   import Icon from 'fa-svelte'
   import { faComments } from '@fortawesome/free-solid-svg-icons/faComments'
+  import { faChevronUp } from '@fortawesome/free-solid-svg-icons/faChevronUp'
+  import { faChevronDown } from '@fortawesome/free-solid-svg-icons/faChevronDown'
   import timeSince from '../utils/timeSince'
 
   export let sub
@@ -19,6 +21,7 @@
     })
 
     const s = await res.json()
+    console.log(s)
     vote = s.vote
     score = s.score
   }
@@ -45,7 +48,15 @@
     top: 0.25rem;
     margin-left: 0.25rem;
   }
+  .vote {
+    display: flex;
+    cursor: pointer;
+  }
+  .vote.active {
+    color: blue;
+  }
   .thumb {
+    display: flex;
     width: 70px;
   }
   .thumb img {
@@ -62,19 +73,16 @@
   .diminish {
     color: rgba(0,0,0,0.25);
   }
-  .vote.active {
-    color: blue;
-  }
 </style>
 
 <article class="media">
   <div class="media-left score">
-    <div class="vote up" class:active={vote === 1} on:click={()=>doVote(vote === 1 ? 0 : 1)}>up</div>
+    <div class="vote up" class:active={vote === 1} on:click={()=>doVote(vote === 1 ? 0 : 1)}><Icon icon={faChevronUp} /></div>
     <div class="value">
       <span class="">{score || 0}</span>
       <span class="diminish is-size-7">{post.score}</span>
     </div>
-    <div class="vote down" class:active={vote === -1} on:click={()=>doVote(vote === -1 ? 0 : -1)}>down</div>
+    <div class="vote down" class:active={vote === -1} on:click={()=>doVote(vote === -1 ? 0 : -1)}><Icon icon={faChevronDown} /></div>
   </div>
   <a target="_blank" href={`${post.url}`} class="media-left thumb">
     <img src={['self', 'default'].includes(post.thumbnail) ? `logos/${sub.slug}.png` : post.thumbnail} alt={post.title} />

@@ -1,6 +1,9 @@
 <script>
+	import { stores } from '@sapper/app'
 	import { onMount } from 'svelte'
 	import Post from './Post.svelte'
+
+	const { session } = stores()
 
   let feed = []
 	let scores = []
@@ -17,9 +20,11 @@
 	  scores = await scoresRes.json()
 	  console.log(scores)
 
-	  const votesRes = await fetch(`/content/votes.json?contentId=${feed.map(p=>p.name).join(",")}`)
-	  votes = await votesRes.json()
-	  console.log(votes)
+		if($session.user){
+		  const votesRes = await fetch(`/content/votes.json?contentId=${feed.map(p=>p.name).join(",")}`)
+		  votes = await votesRes.json()
+		  console.log(votes)
+		}
   })
 
 	function findAttr(arr, matchAttr, match, attr){

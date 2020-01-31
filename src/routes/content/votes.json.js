@@ -56,24 +56,20 @@ export async function post(req, res, next) {
     values: [req.session.user.id, req.body.contentId],
   }
 
-  let userVote, newScore
+  let score
 	try {
     const client = await req.db.connect()
     let dbRes = await client.query(query)
-    if(dbRes.rows.length){
-      let data = dbRes.rows[0]
-    	userVote = data.vote
-    }
+    const { vote } = dbRes.rows[0]
     dbRes = await client.query(scoreQuery)
-    newScore = dbRes.rows[0]
-    newScore.userVote = userVote
+    score = {...dbRes.rows[0], vote }
 
     client.release()
 	} catch(e){
     console.log(e)
   }
 
-	if(!newScore){
+	if(!score){
 		res.writeHead(404, {
 			'Content-Type': 'application/json'
 		});
@@ -87,5 +83,5 @@ export async function post(req, res, next) {
 		'Content-Type': 'application/json'
 	});
 
-  res.end(JSON.stringify(newScore))
+  res.end(JSON.stringify(score))
 }

@@ -1,6 +1,6 @@
 <script>
 	import { stores } from '@sapper/app'
-	import { account, dao, contribBalance, currencyBalance, currencySymbol } from '../stores'
+	import { account, dao, contribBalance, currencyBalance, currencySymbol, accountUser } from '../stores'
 
 	const { session } = stores()
 
@@ -72,14 +72,16 @@
 				<a class='navbar-item' target="_blank" href='https://www.reddit.com/r/daonuts'><span class="icon"><img alt="reddit" src="/reddit-brands.svg" /></span></a>
 				{#if $account}
 					{#if $session.user}
-					<span on:click={logout} class='navbar-item' title={$session.user.username}>{$session.user.username}</span>
+					<span class='navbar-item'><button on:click={logout} class="button is-primary">Logout {$session.user.username}</button></span>
 					{:else}
-					<span on:click={login} class='navbar-item account'>{`${$account.slice(0,8)}...`}</span>
+						{#await $accountUser then accountUser}
+							{#if accountUser}
+								<span class='navbar-item'><button on:click={login} class="button is-primary">Login {accountUser.username}</button></span>
+							{:else}
+								<span class='navbar-item account'>Unregistered ({`${$account.slice(0,8)}...`})</span>
+							{/if}
+						{/await}
 					{/if}
-				{:else}
-				<div class='navbar-item'>
-					<button class="button is-primary">Connect</button>
-				</div>
 		  	{/if}
 			</div>
 		</div>
