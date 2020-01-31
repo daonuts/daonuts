@@ -17,7 +17,7 @@ async function main(){
 			sirv('static', { dev }),
 			compression({ threshold: 0 }),
 			(req,res,n)=>{req.db=pool;n()},
-			cookieSession({name: 'session', secret: 'keyboard kittens'}),
+			cookieSession({name: 'session', secret: process.env.SESSION_SECRET}),
 			authRoutes,
 			// leave sapper middleware to last
 			sapper.middleware({
