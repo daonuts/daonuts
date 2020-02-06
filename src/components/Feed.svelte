@@ -1,24 +1,27 @@
 <script>
 	import { stores } from '@sapper/app'
-	import { onMount } from 'svelte'
+	import { onDestroy, onMount } from 'svelte'
 	import Post from './Post.svelte'
+	import { filter } from '../stores'
 
 	const { session } = stores()
 
   let feed = []
 	let scores = []
 	let votes = []
+	let display = []
 
   export let sub;
 
   onMount(async function() {
-    const feedRes = await fetch(`r/${sub.slug}/feed.json`);
-    feed = await feedRes.json();
-		console.log(feed)
+    const feedRes = await fetch(`r/${sub.slug}/feed.json`)
+    feed = await feedRes.json()
 
 	  const scoresRes = await fetch(`/content/scores.json?contentId=${feed.map(p=>p.name).join(",")}`)
 	  scores = await scoresRes.json()
 	  console.log(scores)
+
+		setDisplay($filter)
 
 		if($session.user){
 		  const votesRes = await fetch(`/content/votes.json?contentId=${feed.map(p=>p.name).join(",")}`)
@@ -27,9 +30,17 @@
 		}
   })
 
+	const unsubscribe = filter.subscribe(setDisplay);
+
+	onDestroy(unsubscribe);
+
 	function findAttr(arr, matchAttr, match, attr){
 		let item = arr.find(i=>i[matchAttr]===match)
 		return item ? item[attr] : null
+	}
+
+	function setDisplay(filter){
+		display = filter ? feed.filter(p=>findAttr(scores, "content_id", p.name, "score")>=0) : feed
 	}
 </script>
 
@@ -37,10 +48,21 @@
   ol {
     list-style: none;
   }
+	.filter {
+		display: flex;
+		justify-content: flex-end;
+		margin: 0.25rem
+	}
 </style>
 
+<div class="filter">
+	<label class="checkbox">
+	  <input type="checkbox" bind:checked={$filter}>
+	  Hide downvoted
+	</label>
+</div>
 <ol>
-  {#each feed as post}
+  {#each display as post}
 		<li>
 			<Post sub={sub} post={post} vote={findAttr(votes, "content_id", post.name, "vote")} score={findAttr(scores, "content_id", post.name, "score")} />
 		</li>

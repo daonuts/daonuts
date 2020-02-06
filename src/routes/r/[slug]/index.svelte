@@ -24,8 +24,6 @@
 	export let actionParams;
 
 	onMount(()=>{
-		console.log("mounted")
-		console.log(sub)
 		if(sub.dao){
 	  	dao.set(sub.dao)
 		}

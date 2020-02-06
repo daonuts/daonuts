@@ -1,13 +1,15 @@
 <script>
 	import { stores } from '@sapper/app'
-	import { account, dao, contribBalance, currencyBalance, currencySymbol, accountUser } from '../stores'
+	import { account, dao, contribBalance, currencyBalance, currencySymbol, accountUser, provider } from '../stores'
 
 	const { session } = stores()
 
 	export let segment;
 
 	async function login(){
-    const res = await fetch(`/login.json?address=${$account}`)
+		const name = (await $accountUser).username
+		const sig = await $provider.getSigner($account).signMessage(`Login ${name} ${$session.nonce}`)
+    const res = await fetch(`/login.json?address=${$account}&sig=${sig}`)
 		const user = await res.json()
 		session.set({user})
 	}
@@ -76,7 +78,7 @@
 					{:else}
 						{#await $accountUser then accountUser}
 							{#if accountUser}
-								<span class='navbar-item'><button on:click={login} class="button is-primary">Login {accountUser.username}</button></span>
+								<span class='navbar-item'><button on:click={login} class="button is-primary">Login</button></span>
 							{:else}
 								<span class='navbar-item account'>Unregistered ({`${$account.slice(0,8)}...`})</span>
 							{/if}

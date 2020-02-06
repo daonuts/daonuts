@@ -18,11 +18,13 @@ async function main(){
 			compression({ threshold: 0 }),
 			(req,res,n)=>{req.db=pool;n()},
 			cookieSession({name: 'session', secret: process.env.SESSION_SECRET}),
+			(req,res,n)=>{req.session.nonce = req.session.nonce || Math.floor(Math.random() * Math.pow(10,10));n()},
 			authRoutes,
 			// leave sapper middleware to last
 			sapper.middleware({
-				session: (req, res) => (req.session && {
-					user: req.session.user
+				session: (req, res) => ({
+					user: req.session.user,
+					nonce: req.session.nonce
 				})
 			})
 		)

@@ -1,6 +1,4 @@
 export async function get(req, res, next) {
-  console.log("query", req.query)
-
   const query = {
     // give the query a unique name
     name: 'fetch-user-by-address',
@@ -20,18 +18,10 @@ export async function get(req, res, next) {
   }
 
 	if(!user){
-		res.writeHead(404, {
-			'Content-Type': 'application/json'
-		});
-
-		return res.end(JSON.stringify({
-			message: `Not found`
-		}));
+		res.writeHead(404, {'Content-Type': 'application/json'});
+		return res.end(JSON.stringify({message: `Not found`}));
 	}
 
-	res.writeHead(200, {
-		'Content-Type': 'application/json'
-	});
-
+	res.writeHead(200, {'Content-Type': 'application/json'});
   res.end(JSON.stringify(user))
 }

@@ -1,7 +1,8 @@
 export async function get(req, res, next) {
-  console.log("before nulling", req.session)
+  if(req.session.user)
+    console.log("logout", req.session.user.id)
+    
   req.session = null
-  console.log("logout", req.session)
 
   res.end("ok")
 }
