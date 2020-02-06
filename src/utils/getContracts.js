@@ -7,15 +7,6 @@ const SubscribeABI = require('../abi/Subscribe.json').abi
 const TippingABI = require('../abi/Tipping.json').abi
 const TokenABI = require('../abi/Token.json').abi
 const TokenManagerABI = require('../abi/TokenManager.json').abi
-// import ethers from 'ethers'
-// import { abi as AirdropDuoABI } from '../abi/AirdropDuo.json'
-// import { abi as CappedVotingABI } from '../abi/CappedVoting.json'
-// import { abi as HarbergerABI } from '../abi/Harberger.json'
-// import { abi as KernelABI } from '../abi/Kernel.json'
-// import { abi as SubscribeABI } from '../abi/Subscribe.json'
-// import { abi as TippingABI } from '../abi/Tipping.json'
-// import { abi as TokenABI } from '../abi/Token.json'
-// import { abi as TokenManagerABI } from '../abi/TokenManager.json'
 const { utils, Contract } = ethers
 const tokenManagerNamehash = utils.namehash('token-manager.aragonpm.eth')
 const apps = {}
@@ -58,5 +49,5 @@ if(typeof window === "undefined"){
       const contracts = await getContracts(daoAddress, ethers.getDefaultProvider(process.argv[3] || 'rinkeby'))
       for (const c in contracts) console.log(`${c}: ${contracts[c].address}`)
     })()
-  } else console.log("no dao address")
+  } // else console.log("no dao address")
 }

@@ -23,18 +23,12 @@ export async function get(req, res, next) {
 	} catch(e){}
 
 	if(!sub){
-		res.writeHead(404, {
-			'Content-Type': 'application/json'
-		});
-
-		return res.end(JSON.stringify({
-			message: `Not found`
-		}));
+		res.writeHead(404, {'Content-Type': 'application/json'});
+		return res.end(JSON.stringify({message: `Not found`}));
 	}
 
-	res.writeHead(200, {
-		'Content-Type': 'application/json'
-	});
+	res.writeHead(200, {'Content-Type': 'application/json'});
+
 	if (lookup.has(slug)) {
 		res.end(JSON.stringify(Object.assign(sub, lookup.get(slug))))
 	} else {

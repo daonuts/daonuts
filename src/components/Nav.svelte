@@ -1,15 +1,28 @@
 <script>
-	import { account, dao, contribBalance, currencyBalance, currencySymbol, user } from '../stores'
+	import { stores } from '@sapper/app'
+	import { account, dao, contribBalance, currencyBalance, currencySymbol, accountUser, provider } from '../stores'
+
+	const { session } = stores()
+
 	export let segment;
+
+	async function login(){
+		const name = (await $accountUser).username
+		const sig = await $provider.getSigner($account).signMessage(`Login ${name} ${$session.nonce}`)
+    const res = await fetch(`/login.json?address=${$account}&sig=${sig}`)
+		const user = await res.json()
+		session.set({user})
+	}
+
+	async function logout(){
+    const res = await fetch(`/logout`)
+		session.set({})
+	}
 </script>
 
 <style>
 	nav {
 		border-bottom: 1px solid rgba(255,62,0,0.1);
-		/* font-weight: 300;
-		padding: 0 1em;
-		display: flex;
-    justify-content: space-between; */
 	}
 
 	.navbar-brand {
@@ -60,17 +73,17 @@
 				<a class='navbar-item' target="_blank" href='https://github.com/daonuts'><span class="icon"><img alt="github" src="/github-brands.svg" /></span></a>
 				<a class='navbar-item' target="_blank" href='https://www.reddit.com/r/daonuts'><span class="icon"><img alt="reddit" src="/reddit-brands.svg" /></span></a>
 				{#if $account}
-					{#await $user then user}
-						{#if user && user.username}
-						<span class='navbar-item' title={$account}>{user.username}</span>
-						{:else}
-						<span class='navbar-item account'>{`${$account.slice(0,8)}...`}</span>
-						{/if}
-					{/await}
-				{:else}
-				<div class='navbar-item'>
-					<button class="button is-primary">Connect</button>
-				</div>
+					{#if $session.user}
+					<span class='navbar-item'><button on:click={logout} class="button is-primary">Logout {$session.user.username}</button></span>
+					{:else}
+						{#await $accountUser then accountUser}
+							{#if accountUser}
+								<span class='navbar-item'><button on:click={login} class="button is-primary">Login</button></span>
+							{:else}
+								<span class='navbar-item account'>Unregistered ({`${$account.slice(0,8)}...`})</span>
+							{/if}
+						{/await}
+					{/if}
 		  	{/if}
 			</div>
 		</div>

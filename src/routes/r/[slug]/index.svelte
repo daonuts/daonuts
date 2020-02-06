@@ -5,11 +5,7 @@
 	import Feed from '../../../components/Feed.svelte'
   import { dao } from '../../../stores'
 
-	export async function preload({ params, query }) {
-
-		console.log(params, query)
-		// the `slug` parameter is available because
-		// this file is called [slug].svelte
+	export async function preload({ params, query }, session) {
 		const res = await this.fetch(`r/${params.slug}.json`);
 		const sub = await res.json();
 		const { action, ...actionParams } = query;
@@ -28,8 +24,6 @@
 	export let actionParams;
 
 	onMount(()=>{
-		console.log("mounted")
-		console.log(sub)
 		if(sub.dao){
 	  	dao.set(sub.dao)
 		}

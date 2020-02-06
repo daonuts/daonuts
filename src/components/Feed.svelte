@@ -1,81 +1,70 @@
 <script>
-	import { onMount } from 'svelte'
-  import Icon from 'fa-svelte'
-  import { faComments } from '@fortawesome/free-solid-svg-icons/faComments'
-  import timeSince from '../utils/timeSince'
+	import { stores } from '@sapper/app'
+	import { onDestroy, onMount } from 'svelte'
+	import Post from './Post.svelte'
+	import { filter } from '../stores'
+
+	const { session } = stores()
 
   let feed = []
+	let scores = []
+	let votes = []
+	let display = []
 
   export let sub;
 
   onMount(async function() {
-    const res = await fetch(`r/${sub.slug}/feed.json`);
-    feed = await res.json();
+    const feedRes = await fetch(`r/${sub.slug}/feed.json`)
+    feed = await feedRes.json()
+
+	  const scoresRes = await fetch(`/content/scores.json?contentId=${feed.map(p=>p.name).join(",")}`)
+	  scores = await scoresRes.json()
+	  console.log(scores)
+
+		setDisplay($filter)
+
+		if($session.user){
+		  const votesRes = await fetch(`/content/votes.json?contentId=${feed.map(p=>p.name).join(",")}`)
+		  votes = await votesRes.json()
+		  console.log(votes)
+		}
   })
+
+	const unsubscribe = filter.subscribe(setDisplay);
+
+	onDestroy(unsubscribe);
+
+	function findAttr(arr, matchAttr, match, attr){
+		let item = arr.find(i=>i[matchAttr]===match)
+		return item ? item[attr] : null
+	}
+
+	function setDisplay(filter){
+		display = filter ? feed.filter(p=>findAttr(scores, "content_id", p.name, "score")>=0) : feed
+	}
 </script>
 
 <style>
   ol {
     list-style: none;
   }
-  .media {
-    align-items: center;
-    border-top: 1px solid rgba(0,0,0,0.1);
-    padding: 0.75rem 0;
-  }
-  .score {
-    width: 50px;
-    text-align: center;
-  }
-  .thumb {
-    width: 70px;
-  }
-  .thumb img {
-    border-radius: 5px;
-  }
-  .title {
-    display: inline;
-    margin-right: 0.4rem;
-    vertical-align: middle;
-  }
-  .subtitle {
-    margin-top: 0.5rem;
-    color: rgba(0,0,0,0.25);
-  }
+	.filter {
+		display: flex;
+		justify-content: flex-end;
+		margin: 0.25rem
+	}
 </style>
 
+<div class="filter">
+	<label class="checkbox">
+	  <input type="checkbox" bind:checked={$filter}>
+	  Hide downvoted
+	</label>
+</div>
 <ol>
-  {#each feed as post}
-    <li>
-      <article class="media">
-        <div class="media-left score">{post.score}</div>
-        <a target="_blank" href={`${post.url}`} class="media-left thumb">
-          <img src={['self', 'default'].includes(post.thumbnail) ? `logos/${sub.slug}.png` : post.thumbnail} alt={post.title} />
-        </a>
-        <div class="media-content">
-          <div class="content">
-            <h2 class="title is-6 has-text-weight-normal">
-              <a target="_blank" href={`${post.url}`}>{post.title}</a>
-            </h2>
-            <span class="subtitle is-size-7">{post.domain}</span>
-            <p class="subtitle is-size-7">
-              submitted {timeSince(new Date(post.created_utc*1000))} by
-              <a target="_blank" href={`https://www.reddit.com/u/${post.author}`}>{`u/${post.author}`}</a>
-            </p>
-          </div>
-          <nav class="level is-mobile">
-            <div class="level-left">
-              <a target="_blank" href={`https://www.reddit.com${post.permalink}`}>
-                <Icon icon={faComments} /> {`${post.num_comments}`}
-              </a>
-            </div>
-          </nav>
-        </div>
-        <div class="media-right">
-          <!-- <button class="delete"></button> -->
-        </div>
-      </article>
-      <!-- {JSON.stringify(post, null, 2)} -->
-    </li>
+  {#each display as post}
+		<li>
+			<Post sub={sub} post={post} vote={findAttr(votes, "content_id", post.name, "vote")} score={findAttr(scores, "content_id", post.name, "score")} />
+		</li>
   {/each}
 </ol>
