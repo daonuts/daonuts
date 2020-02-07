@@ -62,6 +62,7 @@
 	  Hide downvoted
 	</label>
 </div>
+<a href={'/auth'}>auth reddit voting</a>
 <ol>
   {#each display as post}
 		<li>
