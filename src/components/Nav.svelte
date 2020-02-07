@@ -10,13 +10,16 @@
 		const name = (await $accountUser).username
 		const sig = await $provider.getSigner($account).signMessage(`Login ${name} ${$session.nonce}`)
     const res = await fetch(`/login.json?address=${$account}&sig=${sig}`)
-		const user = await res.json()
-		session.set({user})
+		const data = await res.json()
+		if (!res.ok)
+      throw new Error(data.message);
+    else
+			session.set({...$session, user: data})
 	}
 
 	async function logout(){
     const res = await fetch(`/logout`)
-		session.set({})
+		session.set({...$session, user: null})
 	}
 </script>
 
@@ -74,11 +77,11 @@
 				<a class='navbar-item' target="_blank" href='https://www.reddit.com/r/daonuts'><span class="icon"><img alt="reddit" src="/reddit-brands.svg" /></span></a>
 				{#if $account}
 					{#if $session.user}
-					<span class='navbar-item'><button on:click={logout} class="button is-primary">Logout {$session.user.username}</button></span>
+					<span class='navbar-item'><button on:click={logout} class="button is-primary">Sign Out {$session.user.username}</button></span>
 					{:else}
 						{#await $accountUser then accountUser}
 							{#if accountUser}
-								<span class='navbar-item'><button on:click={login} class="button is-primary">Login</button></span>
+								<span class='navbar-item'><button on:click={login} class="button is-primary">Sign In</button></span>
 							{:else}
 								<span class='navbar-item account'>Unregistered ({`${$account.slice(0,8)}...`})</span>
 							{/if}

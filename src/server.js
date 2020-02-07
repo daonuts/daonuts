@@ -36,13 +36,8 @@ main()
 
 function authRoutes(req, res, next){
 	if(["/votes.json"].includes(req.path) && !req.session.user){
-    res.writeHead(401, {
-      'Content-Type': 'application/json'
-    });
-
-    return res.end(JSON.stringify({
-      message: `Please login`
-    }));
+    res.writeHead(401, {'Content-Type': 'application/json'});
+    return res.end(JSON.stringify({message: `Please login`}));
 	}
 
 	next()

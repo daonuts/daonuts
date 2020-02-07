@@ -1,9 +1,12 @@
 <script>
+	import { stores } from '@sapper/app'
   import Icon from 'fa-svelte'
   import { faComments } from '@fortawesome/free-solid-svg-icons/faComments'
   import { faChevronUp } from '@fortawesome/free-solid-svg-icons/faChevronUp'
   import { faChevronDown } from '@fortawesome/free-solid-svg-icons/faChevronDown'
   import timeSince from '../utils/timeSince'
+
+	const { session } = stores()
 
   export let sub
   export let post
@@ -38,6 +41,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    cursor: default;
   }
   .score > .value {
     position: relative;
@@ -51,9 +55,11 @@
   .vote {
     display: flex;
     cursor: pointer;
+    color: rgba(0,0,0,0.4);
   }
-  .vote.active {
-    color: blue;
+  .vote.disabled {
+    cursor: default;
+    color: rgba(0,0,0,0.1);
   }
   .thumb {
     display: flex;
@@ -76,14 +82,25 @@
 </style>
 
 <article class="media">
+  {#if $session.user}
   <div class="media-left score">
-    <div class="vote up" class:active={vote === 1} on:click={()=>doVote(vote === 1 ? 0 : 1)}><Icon icon={faChevronUp} /></div>
+    <div class="vote up" class:has-text-success={vote === 1} on:click={()=>doVote(vote === 1 ? 0 : 1)}><Icon icon={faChevronUp} /></div>
     <div class="value">
       <span class="">{score || 0}</span>
       <span class="diminish is-size-7">{post.score}</span>
     </div>
-    <div class="vote down" class:active={vote === -1} on:click={()=>doVote(vote === -1 ? 0 : -1)}><Icon icon={faChevronDown} /></div>
+    <div class="vote down" class:has-text-danger={vote === -1} on:click={()=>doVote(vote === -1 ? 0 : -1)}><Icon icon={faChevronDown} /></div>
   </div>
+  {:else}
+  <div class="media-left score" data-tooltip="Sign In to vote">
+    <div class="vote up disabled"><Icon icon={faChevronUp} /></div>
+    <div class="value">
+      <span class="">{score || 0}</span>
+      <span class="diminish is-size-7">{post.score}</span>
+    </div>
+    <div class="vote down disabled"><Icon icon={faChevronDown} /></div>
+  </div>
+  {/if}
   <a target="_blank" href={`${post.url}`} class="media-left thumb">
     <img src={['self', 'default'].includes(post.thumbnail) ? `logos/${sub.slug}.png` : post.thumbnail} alt={post.title} />
   </a>

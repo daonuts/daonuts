@@ -10,6 +10,7 @@
 	let scores = []
 	let votes = []
 	let display = []
+	let unsubscribeSession, unsubscribeFilter
 
   export let sub;
 
@@ -17,29 +18,29 @@
     const feedRes = await fetch(`r/${sub.slug}/feed.json`)
     feed = await feedRes.json()
 
-	  const scoresRes = await fetch(`/content/scores.json?contentId=${feed.map(p=>p.name).join(",")}`)
-	  scores = await scoresRes.json()
-	  console.log(scores)
-
-		setDisplay($filter)
-
-		if($session.user){
-		  const votesRes = await fetch(`/content/votes.json?contentId=${feed.map(p=>p.name).join(",")}`)
-		  votes = await votesRes.json()
-		  console.log(votes)
-		}
+		unsubscribeSession = session.subscribe(setVotes);
+		unsubscribeFilter = filter.subscribe(setDisplay);
   })
 
-	const unsubscribe = filter.subscribe(setDisplay);
+	// onDestroy(unsubscribeSession);
+	// onDestroy(unsubscribeFilter);
 
-	onDestroy(unsubscribe);
 
 	function findAttr(arr, matchAttr, match, attr){
 		let item = arr.find(i=>i[matchAttr]===match)
 		return item ? item[attr] : null
 	}
 
-	function setDisplay(filter){
+	async function setVotes(){
+		if($session.user){
+			const votesRes = await fetch(`/content/votes.json?contentId=${feed.map(p=>p.name).join(",")}`)
+			votes = await votesRes.json()
+		}
+	}
+
+	async function setDisplay(filter){
+		const scoresRes = await fetch(`/content/scores.json?contentId=${feed.map(p=>p.name).join(",")}`)
+		scores = await scoresRes.json()
 		display = filter ? feed.filter(p=>findAttr(scores, "content_id", p.name, "score")>=0) : feed
 	}
 </script>
