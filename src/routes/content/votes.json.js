@@ -1,3 +1,5 @@
+import snoowrap from 'snoowrap'
+
 export async function get(req, res, next) {
 
   let values = [req.session.user.id]
@@ -35,6 +37,16 @@ export async function get(req, res, next) {
 
 export async function post(req, res, next) {
 
+  if(![-1,0,1].includes(req.body.vote)){
+		res.writeHead(404, {
+			'Content-Type': 'application/json'
+		});
+
+		return res.end(JSON.stringify({
+			message: `Bad vote parameter`
+		}));
+  }
+
   const query = {
     // give the query a unique name
     name: 'submit-content-vote',
@@ -59,6 +71,24 @@ export async function post(req, res, next) {
     client.release()
 	} catch(e){
     console.log(e)
+  }
+
+  console.log(req.body)
+  console.log(req.session.user)
+
+  if(req.session.user.redditAccess){
+    const r = new snoowrap({
+      userAgent: 'daonuts',
+      clientId: process.env.REDDIT_APP_CLIENT_ID,
+      clientSecret: process.env.REDDIT_APP_CLIENT_SECRET,
+      refreshToken: req.session.user.redditAccess.refresh_token
+    });
+    if(req.body.vote > 0)
+      await r.getSubmission(req.body.contentId).upvote()
+    else if(req.body.vote < 0)
+      await r.getSubmission(req.body.contentId).downvote()
+    else
+      await r.getSubmission(req.body.contentId).unvote()
   }
 
 	if(!score){
