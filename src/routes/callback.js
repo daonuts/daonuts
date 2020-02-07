@@ -20,8 +20,7 @@ export async function get(req, res, next) {
       },
       body: form
     })
-    req.session.user.reddit_access = await redditRes.json()
-    console.log(req.session.user)
+    req.session.user.redditAccess = await redditRes.json()
   }
   redirect(res, returnURI)
 }

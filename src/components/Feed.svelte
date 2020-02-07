@@ -62,7 +62,9 @@
 	  Hide downvoted
 	</label>
 </div>
+{#if $session.user}
 <a href={'/auth'}>auth reddit voting</a>
+{/if}
 <ol>
   {#each display as post}
 		<li>
