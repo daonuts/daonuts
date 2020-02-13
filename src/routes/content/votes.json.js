@@ -7,31 +7,32 @@ export async function get(req, res, next) {
   const params = ids.map((i,idx)=>`$${idx+(values.length+1)}`)
   values = values.concat(ids)
 
+  // console.log(values)
+
   const query = {
     // give the query a unique name
-    name: 'fetch-content-user-votes',
+    name: `fetch-content-user-votes_count:${ids.length}`,
     text: `SELECT user_id, content_id, vote FROM content_votes WHERE user_id = $1 AND content_id IN (${params.join(',')})`,
     values,
   }
 
-	let scores
+	let votes
 	try {
     const client = await req.db.connect()
     let dbRes = await client.query(query)
-    if(dbRes.rows.length)
-      scores = dbRes.rows
+    votes = dbRes.rows
     client.release()
 	} catch(e){
     console.log(e)
   }
 
-	if(!scores){
+	if(!votes){
 		res.writeHead(404, {'Content-Type': 'application/json'});
 		return res.end(JSON.stringify({message: `Not found`}));
 	}
 
 	res.writeHead(200, {'Content-Type': 'application/json'});
-  res.end(JSON.stringify(scores))
+  res.end(JSON.stringify(votes))
 }
 
 
@@ -49,13 +50,13 @@ export async function post(req, res, next) {
 
   const query = {
     // give the query a unique name
-    name: 'submit-content-vote',
+    name: 'submit-user-content-vote',
     text: 'INSERT INTO content_votes (user_id, content_id, vote) VALUES ($1, $2, $3) ON CONFLICT (user_id, content_id) DO UPDATE SET vote = EXCLUDED.vote RETURNING *',
     values: [req.session.user.id, req.body.contentId, req.body.vote],
   }
 
   const scoreQuery = {
-    name: 'fetch-content-score',
+    name: 'fetch-user-content-score',
     text: 'SELECT content_id, sum(vote) as score FROM content_votes WHERE user_id = $1 AND content_id = $2 GROUP BY content_id',
     values: [req.session.user.id, req.body.contentId],
   }

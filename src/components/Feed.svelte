@@ -2,7 +2,7 @@
 	import { stores } from '@sapper/app'
 	import { onDestroy, onMount } from 'svelte'
 	import Post from './Post.svelte'
-	import { filter } from '../stores'
+	import { feedType } from '../stores'
 
 	const { session } = stores()
 
@@ -10,20 +10,17 @@
 	let scores = []
 	let votes = []
 	let display = []
-	let unsubscribeSession, unsubscribeFilter
+	let unsubSession, unsubFeedType, unsubFilter
 
   export let sub;
 
   onMount(async function() {
-    const feedRes = await fetch(`r/${sub.slug}/feed.json`)
-    feed = await feedRes.json()
-
-		unsubscribeSession = session.subscribe(setVotes);
-		unsubscribeFilter = filter.subscribe(setDisplay);
+		unsubFeedType = feedType.subscribe(setFeed)
+		unsubSession = session.subscribe(setVotes)
   })
 
-	// onDestroy(unsubscribeSession);
-	// onDestroy(unsubscribeFilter);
+	// onDestroy(unsubSession);
+	// onDestroy(unsubFilter);
 
 
 	function findAttr(arr, matchAttr, match, attr){
@@ -31,44 +28,44 @@
 		return item ? item[attr] : null
 	}
 
+	async function setFeed(newFeedType){
+		console.log(newFeedType)
+    const feedRes = await fetch(`r/${sub.slug}/feed.json?type=${newFeedType}`)
+    feed = await feedRes.json()
+
+		console.log(feed)
+		await setVotes()
+	}
+
 	async function setVotes(){
-		if($session.user){
+		if($session.user && feed.length){
 			const votesRes = await fetch(`/content/votes.json?contentId=${feed.map(p=>p.name).join(",")}`)
 			votes = await votesRes.json()
 		}
 	}
 
-	async function setDisplay(filter){
-		const scoresRes = await fetch(`/content/scores.json?contentId=${feed.map(p=>p.name).join(",")}`)
-		scores = await scoresRes.json()
-		display = filter ? feed.filter(p=>findAttr(scores, "content_id", p.name, "score")>=0) : feed
-	}
 </script>
 
 <style>
   ol {
     list-style: none;
   }
-	.filter {
-		display: flex;
-		justify-content: flex-end;
-		margin: 0.25rem
-	}
 </style>
 
-<div class="filter">
-	<label class="checkbox">
-	  <input type="checkbox" bind:checked={$filter}>
-	  Hide downvoted
-	</label>
-</div>
-{#if $session.user}
+{#if $session.user && !$session.user.redditAccess}
 <a href={'/auth'}>auth reddit voting</a>
 {/if}
+<div class="tabs">
+  <ul>
+    <li class:is-active="{$feedType === 'member'}"><a href="javascript:" on:click="{()=>feedType.set('member')}">Member</a></li>
+    <li class:is-active="{$feedType === 'hot'}"><a href="javascript:" on:click="{()=>feedType.set('hot')}">Hot</a></li>
+    <li class:is-active="{$feedType === 'new'}"><a href="javascript:" on:click="{()=>feedType.set('new')}">New</a></li>
+  </ul>
+</div>
 <ol>
-  {#each display as post}
+  {#each feed as post}
 		<li>
-			<Post sub={sub} post={post} vote={findAttr(votes, "content_id", post.name, "vote")} score={findAttr(scores, "content_id", post.name, "score")} />
+			<Post sub={sub} post={post} vote={findAttr(votes, "content_id", post.name, "vote")} score={post.member_score} />
 		</li>
   {/each}
 </ol>

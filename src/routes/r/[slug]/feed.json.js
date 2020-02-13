@@ -1,4 +1,5 @@
 import snoowrap from 'snoowrap'
+import getScores from '../../../utils/getScores'
 
 const reddit = new snoowrap({
   userAgent: 'daonuts 1.0 by u/daonuts',
@@ -12,23 +13,33 @@ export async function get(req, res, next) {
 	// the `slug` parameter is available because
 	// this file is called [slug].json.js
 	const slug = req.params.slug.toLowerCase()
+  const type = req.query.type || 'member'
 
-	let hot
+	let feed
 	try {
-		hot = await reddit.getSubreddit(slug).getHot({limit: 100})
+		// feed = await reddit.getSubreddit(slug).getHot({limit: 100})
+    if(type === 'new')
+		  feed = await reddit.getSubreddit(slug).getNew()
+    else
+		  feed = await reddit.getSubreddit(slug).getHot()
 	} catch(e){}
 
-	if(!hot){
+	if(!feed){
 		res.writeHead(404, {'Content-Type': 'application/json'});
 		return res.end(JSON.stringify({message: `Not found`}));
 	}
 
+  const scores = await getScores(req.db, feed.map(p=>p.name))
+  feed.forEach(post=>{
+    let s = scores.find(s=>s.content_id===post.name)
+    if(s) post.member_score = s.score
+  })
+
+  if(type === 'member'){
+    feed = feed.filter(post=>!post.member_score || post.member_score>=0)
+  }
+
 	res.writeHead(200, {'Content-Type': 'application/json'});
-  res.end(JSON.stringify(hot))
-	// if (lookup.has(slug)) {
-	// 	res.end(JSON.stringify(Object.assign(sub, lookup.get(slug))))
-	// } else {
-	// 	res.end(JSON.stringify(sub))
-	// }
+  res.end(JSON.stringify(feed))
 
 }

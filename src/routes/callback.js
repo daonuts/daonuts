@@ -20,7 +20,8 @@ export async function get(req, res, next) {
       },
       body: form
     })
-    req.session.user.redditAccess = await redditRes.json()
+    if(redditRes.status === 200)
+      req.session.user.redditAccess = await redditRes.json()
   }
   redirect(res, returnURI)
 }

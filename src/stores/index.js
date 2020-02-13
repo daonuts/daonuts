@@ -37,7 +37,8 @@ export const currencySymbol = derived(contracts, async ($contracts) => {
   const { currency } = await $contracts
   return await currency.symbol()
 })
-export const filter = writable(true)
+export const feedType = writable('member')
+// export const filter = writable(true)
 
 async function init(){
   if(typeof ethereum !== 'undefined'){
