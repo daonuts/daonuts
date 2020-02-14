@@ -17,7 +17,7 @@
 
   onMount(async function() {
 		unsubFeedType = feedType.subscribe(setFeed)
-		unsubSession = session.subscribe(setVotes)
+		unsubSession = session.subscribe(()=>attachVotes(feed))
   })
 
 	// onDestroy(unsubSession);
@@ -37,6 +37,7 @@
 
 			feed = feed.concat(more)
 			setTimeout(()=>called=false,0)
+			attachVotes(more)
 		}
 	}
 
@@ -44,15 +45,14 @@
 		console.log(newFeedType)
     const feedRes = await fetch(`r/${sub.slug}/feed.json?type=${newFeedType}`)
     feed = await feedRes.json()
-
-		console.log(feed)
-		await setVotes()
+		await attachVotes(feed)
 	}
 
-	async function setVotes(){
-		if($session.user && feed.length){
-			const votesRes = await fetch(`/content/votes.json?contentId=${feed.map(p=>p.name).join(",")}`)
-			votes = await votesRes.json()
+	async function attachVotes(items){
+		if($session.user && items.length){
+			const votesRes = await fetch(`/content/votes.json?contentId=${items.map(p=>p.name).join(",")}`)
+			const moreVotes = await votesRes.json()
+			votes = votes.concat(moreVotes)
 		}
 	}
 

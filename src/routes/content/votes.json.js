@@ -74,9 +74,6 @@ export async function post(req, res, next) {
     console.log(e)
   }
 
-  console.log(req.body)
-  console.log(req.session.user)
-
   if(req.session.user.redditAccess){
     const r = new snoowrap({
       userAgent: 'daonuts',
