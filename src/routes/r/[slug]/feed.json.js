@@ -1,5 +1,6 @@
 import snoowrap from 'snoowrap'
 import getScores from '../../../utils/getScores'
+import { byUsername } from '../../../utils/getUsers'
 
 const reddit = new snoowrap({
   userAgent: 'daonuts 1.0 by u/daonuts',
@@ -32,16 +33,19 @@ export async function get(req, res, next) {
 	}
 
   const scores = await getScores(req.db, feed.map(p=>p.name))
+  const users = await byUsername(req.db, Array.from(new Set(feed.map(p=>p.author.name))))
+
   feed.forEach(post=>{
     let s = scores.find(s=>s.content_id===post.name)
-    if(s) post.member_score = s.score
+    if(s) post.daonuts_score = s.score
+    let u = users.find(u=>u.username===post.author.name)
+    if(u) post.daonuts_address = u.address
   })
 
   if(type === 'member'){
-    feed = feed.filter(post=>!post.member_score || post.member_score>=0)
+    feed = feed.filter(post=>!post.daonuts_score || post.daonuts_score>=0)
   }
 
 	res.writeHead(200, {'Content-Type': 'application/json'});
   res.end(JSON.stringify(feed))
-
 }

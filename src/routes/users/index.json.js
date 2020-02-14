@@ -1,27 +1,21 @@
+import { byAddress, byUsername } from '../../utils/getUsers'
+
 export async function get(req, res, next) {
-  const query = {
-    // give the query a unique name
-    name: 'fetch-user-by-address',
-    text: 'SELECT id, username, address FROM users WHERE address ILIKE $1 LIMIT 1',
-    values: [req.query.address],
-  }
+  let users
+  if(req.query.address){
+    users = await byAddress(req.db, req.query.address.split(","))
+  } else if(req.query.username){
+    users = await byUsername(req.db, req.query.username.split(","))
+  } else {
+		res.writeHead(422, {'Content-Type': 'application/json'});
+		return res.end(JSON.stringify({message: `Missing query parameter`}));
+	}
 
-	let user
-	try {
-    const client = await req.db.connect()
-    let dbRes = await client.query(query)
-    if(dbRes.rows.length)
-      user = dbRes.rows[0]
-    client.release()
-	} catch(e){
-    console.log(e)
-  }
-
-	if(!user){
+	if(!users.length){
 		res.writeHead(404, {'Content-Type': 'application/json'});
 		return res.end(JSON.stringify({message: `Not found`}));
 	}
 
 	res.writeHead(200, {'Content-Type': 'application/json'});
-  res.end(JSON.stringify(user))
+  res.end(JSON.stringify(users))
 }

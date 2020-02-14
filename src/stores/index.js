@@ -11,7 +11,7 @@ export const accountUser = derived(account, async $account => {
   if(!$account) return null
   let res = await fetch(`/users.json?address=${await $account}`)
   if(res.status !== 200) return null
-  return await res.json()
+  else return (await res.json())[0]
 })
 export const dao = writable()
 export const contracts = derived([dao, provider], async ([$dao, $provider]) => {

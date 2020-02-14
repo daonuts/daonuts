@@ -7,8 +7,6 @@ export async function get(req, res, next) {
   const params = ids.map((i,idx)=>`$${idx+(values.length+1)}`)
   values = values.concat(ids)
 
-  // console.log(values)
-
   const query = {
     // give the query a unique name
     name: `fetch-content-user-votes_count:${ids.length}`,

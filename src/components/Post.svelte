@@ -71,7 +71,7 @@
   .title {
     display: inline;
     margin-right: 0.4rem;
-    vertical-align: middle;
+    /* vertical-align: middle; */
   }
   .subtitle {
     margin-top: 0.5rem;
@@ -79,6 +79,9 @@
   .diminish {
     color: rgba(0,0,0,0.25);
   }
+	.member {
+		color: goldenrod;
+	}
 </style>
 
 <article class="media">
@@ -112,7 +115,10 @@
       <span class="diminish is-size-7">{post.domain}</span>
       <p class="subtitle is-size-7">
         submitted {timeSince(new Date(post.created_utc*1000))} by
-        <a target="_blank" href={`https://www.reddit.com/u/${post.author}`}>{`u/${post.author}`}</a>
+        <a class:member={!!post.daonuts_address} target="_blank" href={`https://www.reddit.com/u/${post.author}`}>{`u/${post.author}`}</a>
+				<!-- {#if post.daonuts_address}
+					<button class="button is-light is-info is-small">tip</button>
+				{/if} -->
       </p>
     </div>
     <nav class="level is-mobile">

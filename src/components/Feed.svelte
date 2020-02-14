@@ -46,6 +46,7 @@
     const feedRes = await fetch(`r/${sub.slug}/feed.json?type=${newFeedType}`)
     feed = await feedRes.json()
 		await attachVotes(feed)
+		console.log(feed)
 	}
 
 	async function attachVotes(items){
@@ -67,13 +68,12 @@
   ol {
     list-style: none;
   }
+	.tabs ul {
+		justify-content: center;
+	}
 </style>
 
 <svelte:window on:scroll={scrolled}/>
-
-{#if $session.user && !$session.user.redditAccess}
-<a href={'/auth'}>auth reddit voting</a>
-{/if}
 <div class="tabs">
   <ul>
     <li class:is-active="{$feedType === 'member'}"><a href="javascript:" on:click="{()=>feedType.set('member')}">Member</a></li>
@@ -84,7 +84,7 @@
 <ol>
   {#each feed as post}
 		<li>
-			<Post sub={sub} post={post} vote={findAttr(votes, "content_id", post.name, "vote")} score={post.member_score} />
+			<Post sub={sub} post={post} vote={findAttr(votes, "content_id", post.name, "vote")} score={post.daonuts_score} />
 		</li>
   {/each}
 </ol>

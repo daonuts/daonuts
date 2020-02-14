@@ -1,9 +1,11 @@
 <script>
   import ethers from 'ethers'
+	import { stores } from '@sapper/app'
   import { derived } from 'svelte/store'
   import { account, contracts, contribBalance, currencyBalance, currencySymbol } from '../stores'
 	import Tip from './Tip.svelte'
   const { BigNumber, constants, utils } = ethers
+  const { session } = stores()
 
   const balance = derived([contribBalance, currencyBalance], async ([$contribBalance, $currencyBalance]) => {
     if(!$contribBalance || !$currencyBalance) return
@@ -43,6 +45,9 @@
   .logo {
     cursor: pointer;
   }
+  .auth.button {
+    margin-top: 1.5rem;
+  }
 </style>
 
 <img alt={`${sub.display_name} logo`} src={`logos/${sub.slug}.png`} class="logo" on:click={watchCurrency} />
@@ -51,3 +56,9 @@
   <progress class="progress {value[0].ratioClass}" title={`${value[0].currency} of ${value[0].contrib} earned`} value={value[0].currency} max={value[0].contrib}>{value[0].currency}</progress>
 {/await}
 <a target="_blank" href={`https://mainnet.aragon.org/#/${sub.ens || sub.dao}/`}>DAO Admin</a>
+
+{#if $session.user && !$session.user.redditAccess}
+<a class="auth button" href={'/auth'}>
+  vote on Reddit
+</a>
+{/if}

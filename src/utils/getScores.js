@@ -1,4 +1,4 @@
-async function getScores(db,ids){
+async function getScores(db, ids){
 
   const query = {
     // give the query a unique name
@@ -17,7 +17,7 @@ async function getScores(db,ids){
 	} catch(e){
     console.log(e)
   }
-  
+
   return scores
 }
 
