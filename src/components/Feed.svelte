@@ -10,6 +10,7 @@
 	let scores = []
 	let votes = []
 	let display = []
+	let called
 	let unsubSession, unsubFeedType, unsubFilter
 
   export let sub;
@@ -28,6 +29,17 @@
 		return item ? item[attr] : null
 	}
 
+	async function loadMore(){
+		if(!called){
+			called = true
+			const moreRes = await fetch(`r/${sub.slug}/feed.json?type=${$feedType}&after=${feed[feed.length-1].name}`)
+			const more = await moreRes.json()
+
+			feed = feed.concat(more)
+			setTimeout(()=>called=false,0)
+		}
+	}
+
 	async function setFeed(newFeedType){
 		console.log(newFeedType)
     const feedRes = await fetch(`r/${sub.slug}/feed.json?type=${newFeedType}`)
@@ -44,6 +56,11 @@
 		}
 	}
 
+	async function scrolled(e){
+		if(window.innerHeight + window.scrollY > document.documentElement.scrollHeight - 1000)
+			loadMore()
+	}
+
 </script>
 
 <style>
@@ -51,6 +68,8 @@
     list-style: none;
   }
 </style>
+
+<svelte:window on:scroll={scrolled}/>
 
 {#if $session.user && !$session.user.redditAccess}
 <a href={'/auth'}>auth reddit voting</a>

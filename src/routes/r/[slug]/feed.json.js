@@ -18,10 +18,12 @@ export async function get(req, res, next) {
 	let feed
 	try {
 		// feed = await reddit.getSubreddit(slug).getHot({limit: 100})
+    let options = {}
+    if(req.query.after) options.after = req.query.after
     if(type === 'new')
-		  feed = await reddit.getSubreddit(slug).getNew()
+		  feed = await reddit.getSubreddit(slug).getNew(options)
     else
-		  feed = await reddit.getSubreddit(slug).getHot()
+		  feed = await reddit.getSubreddit(slug).getHot(options)
 	} catch(e){}
 
 	if(!feed){
