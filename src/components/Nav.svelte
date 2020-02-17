@@ -56,6 +56,9 @@
 		display: block;
 		bottom: -1px;
 	}
+	.notification {
+		margin-bottom: 0;
+	}
 </style>
 
 <nav class="navbar">

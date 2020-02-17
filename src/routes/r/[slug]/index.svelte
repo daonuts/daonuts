@@ -48,7 +48,7 @@
 		height: auto;
 	}
 	.hero-body {
-		padding-bottom: 0;
+		padding-bottom: 1rem;
 	}
 </style>
 
@@ -56,7 +56,7 @@
 	<title>{sub.title}</title>
 </svelte:head>
 
-<section class="hero" style="background: top center no-repeat url({sub.banner_background_image})">
+<section class="hero" style="background: url({sub.banner_background_image}) top center no-repeat">
   <div class="hero-body">
     <div class="container">
 			<h1 class="title has-text-weight-medium is-size-4">{sub.title}</h1>
