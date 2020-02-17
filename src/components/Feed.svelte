@@ -32,7 +32,7 @@
 	async function loadMore(){
 		if(!called){
 			called = true
-			const moreRes = await fetch(`r/${sub.slug}/feed.json?type=${$feedType}&after=${feed[feed.length-1].name}`)
+			const moreRes = await fetch(`r/${sub.display_name.toLowerCase()}/feed.json?type=${$feedType}&after=${feed[feed.length-1].name}`)
 			const more = await moreRes.json()
 
 			feed = feed.concat(more)
@@ -43,7 +43,8 @@
 
 	async function setFeed(newFeedType){
 		console.log(newFeedType)
-    const feedRes = await fetch(`r/${sub.slug}/feed.json?type=${newFeedType}`)
+		console.log(sub)
+    const feedRes = await fetch(`r/${sub.display_name.toLowerCase()}/feed.json?type=${newFeedType}`)
     feed = await feedRes.json()
 		await attachVotes(feed)
 		console.log(feed)

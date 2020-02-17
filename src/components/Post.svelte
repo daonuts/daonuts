@@ -104,8 +104,8 @@
     <div class="vote down disabled"><Icon icon={faChevronDown} /></div>
   </div>
   {/if}
-  <a target="_blank" href={`${post.url}`} class="media-left thumb">
-    <img src={['self', 'default'].includes(post.thumbnail) ? `logos/${sub.slug}.png` : post.thumbnail} alt={post.title} />
+  <a target="_blank" href={`${post.url}`} class="media-left thumb"><!-- `logos/${sub.display_name.toLowerCase()}.png` -->
+    <img src={['self', 'default'].includes(post.thumbnail) ? sub.icon_img : post.thumbnail} alt={post.title} />
   </a>
   <div class="media-content">
     <div class="content">

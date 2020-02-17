@@ -4,6 +4,7 @@
 
 	const { session } = stores()
 
+	let hideAddressWarning = false;
 	export let segment;
 
 	async function login(){
@@ -92,3 +93,9 @@
 		</div>
 	</div>
 </nav>
+{#if $session.user && $account && $account !== $session.user.address && !hideAddressWarning}
+	<div class="notification is-warning">
+		<button class="delete" on:click={()=>hideAddressWarning=true}></button>
+	  Your current Ethereum address ({$account}) does not match your registered address ({$session.user.address}). On-chain interactions may not have the intended results.
+	</div>
+{/if}
