@@ -56,7 +56,7 @@
 	<title>{sub.title}</title>
 </svelte:head>
 
-<section class="hero" style="background: url({sub.banner_background_image}) top center no-repeat">
+<section class="hero" style="background: url({sub.banner_background_image}) top center/auto 192px no-repeat">
   <div class="hero-body">
     <div class="container">
 			<h1 class="title has-text-weight-medium is-size-4">{sub.title}</h1>
