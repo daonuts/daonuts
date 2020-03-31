@@ -1,6 +1,7 @@
 const { ethers } = require('ethers')
 const AirdropDuoABI = require('../abi/AirdropDuo.json').abi
 const CappedVotingABI = require('../abi/CappedVoting.json').abi
+const BurnABI = require('../abi/Burn.json').abi
 const HarbergerABI = require('../abi/Harberger.json').abi
 const KernelABI = require('../abi/Kernel.json').abi
 const SubscribeABI = require('../abi/Subscribe.json').abi
@@ -11,6 +12,7 @@ const { utils, Contract } = ethers
 const tokenManagerNamehash = utils.namehash('token-manager.aragonpm.eth')
 const apps = {}
 apps[utils.namehash('capped-voting-app.open.aragonpm.eth')] = {name: 'voting', abi: CappedVotingABI}
+apps[utils.namehash('burn-app.open.aragonpm.eth')] = {name: 'burn', abi: BurnABI}
 apps[utils.namehash('harberger-app.open.aragonpm.eth')] = {name: 'harberger', abi: HarbergerABI}
 apps[utils.namehash('subscribe-app.open.aragonpm.eth')] = {name: 'subscribe', abi: SubscribeABI}
 apps[utils.namehash('tipping-app.open.aragonpm.eth')] = {name: 'tipping', abi: TippingABI}

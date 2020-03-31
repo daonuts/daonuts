@@ -4,6 +4,7 @@
   import { faComments } from '@fortawesome/free-solid-svg-icons/faComments'
   import { faChevronUp } from '@fortawesome/free-solid-svg-icons/faChevronUp'
   import { faChevronDown } from '@fortawesome/free-solid-svg-icons/faChevronDown'
+  import { faCheck } from '@fortawesome/free-solid-svg-icons/faCheck'
   import timeSince from '../utils/timeSince'
 
 	const { session } = stores()
@@ -28,6 +29,19 @@
     vote = s.vote
     score = s.score
   }
+
+	async function doStake(){
+		const res = await fetch("/content/stakes.json", {
+			method: 'POST',
+			body: JSON.stringify({contentId: post.name}),
+			headers: {
+				'Content-Type': 'application/json'
+			}
+		})
+
+    const s = await res.json()
+    console.log(s)
+	}
 </script>
 
 <style>
@@ -82,9 +96,23 @@
 	.member {
 		color: goldenrod;
 	}
+	.stake {
+		cursor: pointer;
+		color: rgba(0,0,0,0.1);
+	}
+	.stake:hover {
+		color: rgba(0,0,0,0.4);
+	}
+	.staked .stake {
+		cursor: default;
+		color: gold;
+	}
+	.staked .stake:hover {
+		color: inherit;
+	}
 </style>
 
-<article class="media">
+<article class="media" class:staked={!!post.daonuts_staker}>
   {#if $session.user}
   <div class="media-left score">
     <div class="vote up" class:has-text-success={vote === 1} on:click={()=>doVote(vote === 1 ? 0 : 1)}><Icon icon={faChevronUp} /></div>
@@ -130,6 +158,10 @@
     </nav>
   </div>
   <div class="media-right">
-    <!-- <button class="delete"></button> -->
+	  {#if post.daonuts_staker}
+			<div class="stake" title={post.daonuts_staker}><Icon icon={faCheck} /></div>
+	  {:else}
+			<div class="stake" on:click={doStake}><Icon icon={faCheck} /></div>
+	  {/if}
   </div>
 </article>

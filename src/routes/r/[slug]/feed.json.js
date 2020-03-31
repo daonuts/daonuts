@@ -1,5 +1,6 @@
 import snoowrap from 'snoowrap'
 import getScores from '../../../utils/getScores'
+import getStakes from '../../../utils/getStakes'
 import { byUsername } from '../../../utils/getUsers'
 
 const reddit = new snoowrap({
@@ -33,11 +34,14 @@ export async function get(req, res, next) {
 	}
 
   const scores = await getScores(req.db, feed.map(p=>p.name))
+  const stakes = await getStakes(req.db, feed.map(p=>p.name))
   const users = await byUsername(req.db, Array.from(new Set(feed.map(p=>p.author.name))))
 
   feed.forEach(post=>{
     let s = scores.find(s=>s.content_id===post.name)
     if(s) post.daonuts_score = s.score
+    let stake = stakes.find(s=>s.content_id===post.name)
+    if(stake) post.daonuts_staker = stake.user_id
     let u = users.find(u=>u.username===post.author.name)
     if(u) post.daonuts_address = u.address
   })
