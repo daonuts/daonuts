@@ -1,11 +1,15 @@
 <script>
   import ethers from 'ethers'
 	import { stores } from '@sapper/app'
+	import { onDestroy, onMount } from 'svelte'
   import { derived } from 'svelte/store'
   import { account, contracts, contribBalance, currencyBalance, currencySymbol } from '../stores'
 	import Tip from './Tip.svelte'
   const { BigNumber, constants, utils } = ethers
   const { session } = stores()
+
+	let unsubSession
+  let burnBalance = 0
 
   const balance = derived([contribBalance, currencyBalance], async ([$contribBalance, $currencyBalance]) => {
     if(!$contribBalance || !$currencyBalance) return
@@ -38,12 +42,26 @@
     }, (err, added) => (added && console.log('Token added')))
   }
 
+	async function setBalance(){
+    const balanceRes = await fetch(`r/${sub.display_name.toLowerCase()}/credits.json`)
+    burnBalance = (await balanceRes.json()).balance
+		console.log(burnBalance)
+	}
+
+  onMount(async function() {
+		unsubSession = session.subscribe(setBalance)
+  })
+
   export let sub
 </script>
 
 <style>
+  .staking,
   .auth.button {
     margin-top: 1.5rem;
+  }
+  .staking > p {
+    margin-bottom: 0.5rem;
   }
 </style>
 
@@ -52,6 +70,15 @@
   <progress class="progress {value[0].ratioClass}" title={`${value[0].currency} of ${value[0].contrib} earned`} value={value[0].currency} max={value[0].contrib}>{value[0].currency}</progress>
 {/await}
 <a target="_blank" href={`https://mainnet.aragon.org/#/${sub.ens || sub.dao}/`}>DAO Admin</a>
+
+{#if $session.user}
+<div class="staking">
+  <p>Staking balance: {burnBalance}</p>
+  <a class="button" href={`/r/${sub.slug}/?action=credit`}>
+    Add credit
+  </a>
+</div>
+{/if}
 
 {#if $session.user && !$session.user.redditAccess}
 <a class="auth button" href={'/auth'}>

@@ -1,5 +1,5 @@
 .DS_Store
-/node_modules/
+**/node_modules/
 /src/node_modules/@sapper/
 yarn-error.log
 /cypress/screenshots/
@@ -9,3 +9,4 @@ up.json
 yarn.lock
 /scripts/
 /scratch/
+**/db.json

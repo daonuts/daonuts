@@ -13,6 +13,8 @@ CREATE TABLE IF NOT EXISTS users (
   updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
+ALTER TABLE users ADD CONSTRAINT users_address_lowercase_ck CHECK (address = lower(address));
+
 CREATE TRIGGER users_updated_at
   BEFORE UPDATE ON users
   FOR EACH ROW

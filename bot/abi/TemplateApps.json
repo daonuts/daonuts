@@ -1,0 +1,72 @@
+{
+  "abi": [
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "dao",
+          "type": "address"
+        },
+        {
+          "name": "voting",
+          "type": "address"
+        },
+        {
+          "name": "contribManager",
+          "type": "address"
+        },
+        {
+          "name": "currencyManager",
+          "type": "address"
+        },
+        {
+          "name": "airdrop",
+          "type": "address"
+        },
+        {
+          "name": "challenge",
+          "type": "address"
+        }
+      ],
+      "name": "installSetA",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "dao",
+          "type": "address"
+        },
+        {
+          "name": "currencyManager",
+          "type": "address"
+        },
+        {
+          "name": "harberger",
+          "type": "address"
+        },
+        {
+          "name": "subscribe",
+          "type": "address"
+        },
+        {
+          "name": "tipping",
+          "type": "address"
+        },
+        {
+          "name": "agent",
+          "type": "address"
+        }
+      ],
+      "name": "installSetB",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ]
+}
