@@ -108,7 +108,7 @@
 		color: gold;
 	}
 	.staked .stake:hover {
-		color: inherit;
+		color: gold;
 	}
 </style>
 

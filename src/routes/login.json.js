@@ -5,8 +5,8 @@ export async function get(req, res, next) {
   const query = {
     // give the query a unique name
     name: 'fetch-user-by-address',
-    text: 'SELECT id, username, address FROM users WHERE address ILIKE $1 LIMIT 1',
-    values: [req.query.address],
+    text: 'SELECT id, username, address FROM users WHERE address = $1 LIMIT 1',
+    values: [req.query.address.toLowerCase()],
   }
 
   let user

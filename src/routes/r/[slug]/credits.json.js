@@ -6,8 +6,8 @@ export async function get(req, res, next) {
   const query = {
     // give the query a unique name
     name: 'submit-content-stake',
-    text: 'SELECT * FROM burn_credits WHERE subreddit = $1 AND user_id = $2 LIMIT 1',
-    values: [subreddit, req.session.user.id],
+    text: 'SELECT * FROM burn_credits WHERE subreddit = $1 AND address = $2 LIMIT 1',
+    values: [subreddit, req.session.user.address],
   }
 
 	let credit

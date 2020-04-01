@@ -8,6 +8,9 @@
   const { BigNumber, constants, utils } = ethers
   const { session } = stores()
 
+	let unsubSession
+  let burnBalance = 0
+
   const balance = derived([contribBalance, currencyBalance], async ([$contribBalance, $currencyBalance]) => {
     if(!$contribBalance || !$currencyBalance) return
     if(!(await $contribBalance) || !(await $currencyBalance)) return
@@ -50,7 +53,6 @@
   })
 
   export let sub
-  let burnBalance = 0
 </script>
 
 <style>
