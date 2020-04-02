@@ -27,6 +27,7 @@
 	export let actionParams;
 
 	onMount(()=>{
+		console.log(sub)
 		if(sub.dao){
 	  	dao.set(sub.dao)
 		}
@@ -68,14 +69,14 @@
 	<div class="columns">
 		<aside class="menu section column is-one-fifth">
 			<img alt={`${sub.display_name} logo`} src={sub.icon_img} class="logo" />
-			{#if $dao}
+			{#if sub.dao}
 				<DaoMenu sub={sub} />
 			{:else}
 				<a id="request-dao" class="button is-primary" target='_blank' href='https://www.reddit.com/message/compose/?to=carlslarson&subject={sub.display_name}&message=The {sub.display_name_prefixed} subreddit is interested in a daonuts integration.'}>Request dao integration</a>
 			{/if}
 		</aside>
 		<section class="section column is-four-fifths">
-			{#if $dao}
+			{#if sub.dao}
 				<Dao action={action} actionParams={actionParams} />
 			{/if}
 

@@ -62,5 +62,5 @@ export async function post(req, res, next) {
 		'Content-Type': 'application/json'
 	});
 
-  res.end(JSON.stringify(staked))
+  res.end(JSON.stringify({user_id: req.session.user.id}))
 }

@@ -85,7 +85,7 @@
 <ol>
   {#each feed as post}
 		<li>
-			<Post sub={sub} post={post} vote={findAttr(votes, "content_id", post.name, "vote")} score={post.daonuts_score} />
+			<Post sub={sub} post={post} vote={findAttr(votes, "content_id", post.name, "vote")} score={post.daonuts_score} staker={post.daonuts_staker} />
 		</li>
   {/each}
 </ol>

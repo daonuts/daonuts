@@ -7,12 +7,12 @@
 // we don't want to create an `/blog/subs` route — the leading
 // underscore tells Sapper not to do that.
 
-const subs = [
+const daos = [
 	{
 		slug: 'ethtrader',
-		dao: '0x57EBE61f5f8303AD944136b293C1836B3803b4c0',
+		address: '0x57EBE61f5f8303AD944136b293C1836B3803b4c0',
 		ens: 'ethtraderdao.eth'
 	}
 ];
 
-export default subs;
+export default daos;

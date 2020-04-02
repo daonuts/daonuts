@@ -3,6 +3,10 @@
   import ethers from 'ethers'
   const { BigNumber, constants, utils } = ethers
   const { Fragment, Interface, formatBytes32String, parseBytes32String, toUtf8Bytes, hexlify, hexZeroPad, bigNumberify } = utils
+  import { burnCreditsChange } from '../stores'
+
+	let counter = 0
+	const unsubscribe = burnCreditsChange.subscribe(v => counter = v || 0);
 
   let frag = Fragment.from({
       "name": "daonutsCreditV1",
@@ -39,6 +43,9 @@
     let creditTx = await token.send(address, val, data)
     await creditTx.wait()
     close()
+    setTimeout(()=>{
+      burnCreditsChange.set(counter+1)
+    }, 2000)
   }
 
 </script>

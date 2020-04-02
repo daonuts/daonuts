@@ -14,9 +14,17 @@ export const accountUser = derived(account, async $account => {
   else return (await res.json())[0]
 })
 export const dao = writable()
+
+export const burnCreditsChange = writable()
+export const burnCredits = derived([account, dao, burnCreditsChange], async ([$account, $dao]) => {
+  if(!$account || !$dao) return null
+  const creditsRes = await fetch(`r/${$dao.slug.toLowerCase()}/credits.json?address=${await $account}`)
+  if(creditsRes.status !== 200) return null
+  else return (await creditsRes.json()).balance
+})
 export const contracts = derived([dao, provider], async ([$dao, $provider]) => {
   if(!$dao || !$provider) return null
-  return await getContracts($dao, $provider)
+  return await getContracts($dao.address, $provider)
 })
 export const contribBalance = derived([account, contracts], async ([$account, $contracts]) => {
   if(!$account || !$contracts) return null

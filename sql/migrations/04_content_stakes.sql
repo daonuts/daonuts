@@ -8,10 +8,13 @@ CREATE OR REPLACE FUNCTION content_stake(_subreddit VARCHAR, _price INTEGER, _us
 $$
 DECLARE
   _address VARCHAR := (SELECT address FROM users WHERE id = _user_id);
+  _staker INTEGER := (SELECT user_id FROM content_stakes WHERE content_id = _content_id);
   _balance_start INTEGER := (SELECT balance FROM burn_credits WHERE subreddit = _subreddit AND address = _address);
   _balance_remaining INTEGER := _balance_start - _price;
 BEGIN
-  IF _balance_start IS NULL OR _balance_remaining < 0 THEN
+  IF _staker IS NOT NULL THEN
+    RAISE USING ERRCODE = '23505', MESSAGE = 'Already staked';
+  ELIF _balance_start IS NULL OR _balance_remaining < 0 THEN
     RAISE USING ERRCODE = '22003', MESSAGE = 'Insufficient balance';
   END IF;
   UPDATE burn_credits SET balance = _balance_remaining WHERE subreddit = _subreddit AND address = _address;

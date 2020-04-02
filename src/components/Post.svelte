@@ -6,6 +6,7 @@
   import { faChevronDown } from '@fortawesome/free-solid-svg-icons/faChevronDown'
   import { faCheck } from '@fortawesome/free-solid-svg-icons/faCheck'
   import timeSince from '../utils/timeSince'
+  import { burnCreditsChange } from '../stores'
 
 	const { session } = stores()
 
@@ -13,6 +14,9 @@
   export let post
   export let vote
   export let score
+	export let staker
+	let counter = 0
+	const unsubscribe = burnCreditsChange.subscribe(v => counter = v || 0);
 
   async function doVote(dir){
     console.log(dir)
@@ -39,8 +43,11 @@
 			}
 		})
 
-    const s = await res.json()
-    console.log(s)
+	  if(res.status === 200) {
+	    const s = await res.json()
+			staker = s.user_id
+			burnCreditsChange.set(counter+1)
+		}
 	}
 </script>
 
@@ -112,7 +119,7 @@
 	}
 </style>
 
-<article class="media" class:staked={!!post.daonuts_staker}>
+<article class="media" class:staked={!!staker}>
   {#if $session.user}
   <div class="media-left score">
     <div class="vote up" class:has-text-success={vote === 1} on:click={()=>doVote(vote === 1 ? 0 : 1)}><Icon icon={faChevronUp} /></div>
@@ -158,8 +165,8 @@
     </nav>
   </div>
   <div class="media-right">
-	  {#if post.daonuts_staker}
-			<div class="stake" title={post.daonuts_staker}><Icon icon={faCheck} /></div>
+	  {#if staker}
+			<div class="stake" title={staker}><Icon icon={faCheck} /></div>
 	  {:else}
 			<div class="stake" on:click={doStake}><Icon icon={faCheck} /></div>
 	  {/if}
